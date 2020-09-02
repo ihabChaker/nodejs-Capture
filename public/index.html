@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Document</title>
+     <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+
+</head>
+
+<body>
+     <a href="./all.html">list</a>
+     <h1>altitude</h1>
+     <span id="white"></span>&deg;
+     <h1>longtitude</h1>
+     <span id="black"></span>&deg;<br /><br />
+     <input type="text" id="inp" />
+     <button type="submit" onclick="setup()">submit</button>
+
+     <script>
+          function setup() {
+               if ('geolocation' in navigator) {
+                    const pos = navigator.geolocation.getCurrentPosition(async position => {
+
+                         const video = createCapture(VIDEO)
+                        
+                         video.loadPixels()
+                         const image64 = video.canvas.toDataURL('image/jpg')
+                         const long = position.coords.longitude
+                         document.getElementById('white').textContent = long
+                         const lat = position.coords.latitude
+                         document.getElementById('black').textContent = lat
+                         console.log(document.getElementById('inp').value)
+                         const mood = document.getElementById('inp').value
+                         const data = { long, lat, mood, image64 }
+                         const options = {
+                              method: "POST",
+                              headers: {
+                                   'Content-type': 'application/json',
+                              },
+                              body: JSON.stringify(data)
+                         }
+                         console.log(position.coords)
+                         fetch('/api', options)
+                    })
+               }
+
+
+          }
+
+     </script>
+</body>
+
+</html>
